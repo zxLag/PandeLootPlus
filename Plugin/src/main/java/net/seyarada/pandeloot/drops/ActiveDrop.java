@@ -96,24 +96,17 @@ public class ActiveDrop {
 
             double distance = e.getLocation().distance(pL);
             if(distance<=distanceTrigger) {
-                double distanceMod = (force>0) ? (distance*0.25)*force : 1;
-
-                Vector v = pL.toVector().subtract(e.getLocation().toVector()).normalize().multiply(force);
-                v.setX( (v.getX()*0.5)*distanceMod+v.getX()*0.5 );
-                v.setY( (v.getY()*0.5)*distanceMod+v.getY()*0.5 );
-                v.setZ( (v.getZ()*0.5)*distanceMod+v.getZ()*0.5 );
-
-                if(v.length() > 4)	{
-                    v = v.normalize().multiply(4);
+                // Check if player's inventory is full
+                if(lootDrop.p.getInventory().firstEmpty() == -1) {
+                    // Player's inventory is full, do not apply magnet effect
+                    return;
                 }
 
-                if(Double.isNaN(v.getX())) v.setX(0);
-                if(Double.isNaN(v.getY())) v.setY(0);
-                if(Double.isNaN(v.getZ())) v.setZ(0);
+                double distanceMod = (force>0) ? (distance*0.25)*force : 1;
 
+                Vector v = pL.toVector().subtract(e.getLocation().toVector()).normalize().multiply(distanceMod);
                 e.setVelocity(v);
             }
-
         }, 0, frequency);
     }
 
